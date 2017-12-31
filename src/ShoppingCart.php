@@ -27,6 +27,19 @@ class ShoppingCart
         
     }
 
+    /**
+     * get the cart from the Session
+     *
+     * @return get the session cart array and the cart object or null
+     */
+    public function get()
+    {
+        // Get the Cart from the Session if there is one
+        $cart = Session::has('cart') ? Session::get('cart') : null;
+
+        // return the Cart
+        return $cart;
+    }
 
     /**
      * update the cart in the Session
@@ -40,6 +53,17 @@ class ShoppingCart
 
         // return the Cart if needed
         return $this;
+    }
+
+    /**
+     * empty the cart in the Session
+     *
+     * @return empty the session cart array 
+     */
+    public function forget()
+    {
+        // remove the Cart from the Session
+        Session::forget('cart');
     }
 
     /**
