@@ -23,6 +23,9 @@ class ShoppingCartServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        App::bind('ShoppingCart', function()
+        {
+            return new ShoppingCart;
+        });
     }
 }
