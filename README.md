@@ -1,4 +1,4 @@
-# Shopping-Cart
+# ShoppingCart
 
 [![Latest Version on Packagist][ico-version]][link-packagist]
 [![Software License][ico-license]](LICENSE.md)
@@ -6,8 +6,6 @@
 [![Coverage Status][ico-scrutinizer]][link-scrutinizer]
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
-
-**Note:** Replace ```Bahaa Alhagar``` ```https://github.com/BahaaAlhagar``` ```https://github.com/BahaaAlhagar``` ```bahaa.rock@gmail.com``` ```BahaaAlhagar``` ```Shopping-Cart``` ```Simple Laravel Shopping Cart``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line. You can run `$ php prefill.php` in the command line to make all replacements at once. Delete the file prefill.php as well.
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
 PSRs you support to avoid any confusion with users and contributors.
@@ -30,13 +28,13 @@ vendor/
 Via Composer
 
 ``` bash
-$ composer require BahaaAlhagar/Shopping-Cart
+$ composer require BahaaAlhagar/ShoppingCart
 ```
 
 ## Usage
 
 ``` php
-$skeleton = new BahaaAlhagar\Shopping-Cart();
+$skeleton = new BahaaAlhagar\ShoppingCart();
 echo $skeleton->echoPhrase('Hello, League!');
 ```
 
@@ -67,17 +65,17 @@ If you discover any security related issues, please email bahaa.rock@gmail.com i
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/packagist/v/BahaaAlhagar/Shopping-Cart.svg?style=flat-square
+[ico-version]: https://img.shields.io/packagist/v/BahaaAlhagar/ShoppingCart.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-travis]: https://img.shields.io/travis/BahaaAlhagar/Shopping-Cart/master.svg?style=flat-square
-[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/BahaaAlhagar/Shopping-Cart.svg?style=flat-square
-[ico-code-quality]: https://img.shields.io/scrutinizer/g/BahaaAlhagar/Shopping-Cart.svg?style=flat-square
-[ico-downloads]: https://img.shields.io/packagist/dt/BahaaAlhagar/Shopping-Cart.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/BahaaAlhagar/ShoppingCart/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/BahaaAlhagar/ShoppingCart.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/BahaaAlhagar/ShoppingCart.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/BahaaAlhagar/ShoppingCart.svg?style=flat-square
 
-[link-packagist]: https://packagist.org/packages/BahaaAlhagar/Shopping-Cart
-[link-travis]: https://travis-ci.org/BahaaAlhagar/Shopping-Cart
-[link-scrutinizer]: https://scrutinizer-ci.com/g/BahaaAlhagar/Shopping-Cart/code-structure
-[link-code-quality]: https://scrutinizer-ci.com/g/BahaaAlhagar/Shopping-Cart
-[link-downloads]: https://packagist.org/packages/BahaaAlhagar/Shopping-Cart
+[link-packagist]: https://packagist.org/packages/BahaaAlhagar/ShoppingCart
+[link-travis]: https://travis-ci.org/BahaaAlhagar/ShoppingCart
+[link-scrutinizer]: https://scrutinizer-ci.com/g/BahaaAlhagar/ShoppingCart/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/BahaaAlhagar/ShoppingCart
+[link-downloads]: https://packagist.org/packages/BahaaAlhagar/ShoppingCart
 [link-author]: https://github.com/https://github.com/BahaaAlhagar
 [link-contributors]: ../../contributors
