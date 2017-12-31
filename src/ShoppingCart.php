@@ -102,7 +102,28 @@ class ShoppingCart
             unset($this->items[$id]);
         }
 
-        // add the cart to the Session
+        // update the Cart in the Session
+        $this->update();
+    }
+
+    /**
+     * Remove item from the Cart
+     *
+     * @param object $item item to remove
+     *
+     * @return update the session cart array and the cart object 
+     */
+    public function remove($item)
+    {
+        // we need id for the array index
+        $id = $item->id;
+
+        // remove item qty and price from cart
+        $this->totalQty -= $this->items[$id]['qty'];
+        $this->totalPrice -= $this->items[$id]['price'];
+        unset($this->items[$id]);
+
+        // update the Cart in the Session
         $this->update();
     }
 }
