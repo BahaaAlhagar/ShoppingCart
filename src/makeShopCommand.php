@@ -3,7 +3,6 @@
 namespace BahaaAlhagar\ShoppingCart;
 
 use Illuminate\Console\Command;
-use BahaaAlhagar\ShoppingCart\packageHelper;
 
 class makeShopCommand extends Command
 {
@@ -12,7 +11,7 @@ class makeShopCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'make:shop --vendor';
+    protected $signature = 'make:shop {--config= : whether you want to publish the config file or not}';
 
     /**
      * The console command description.
@@ -22,13 +21,16 @@ class makeShopCommand extends Command
     protected $description = 'Create a simple shop for a quick start.';
 
     /**
+     * Package Helper class
+     * @var object
+     */
+    protected $helper;
+
+    /**
      * Create a new command instance.
      *
      * @return void
      */
-
-    protected $helper;
-
     public function __construct(packageHelper $helper)
     {
         parent::__construct();

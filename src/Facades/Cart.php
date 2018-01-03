@@ -4,7 +4,7 @@ namespace BahaaAlhagar\ShoppingCart\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class ShoppingCart extends Facade {
+class Cart extends Facade {
     /**
      * Get the binding in the IoC container
      *
