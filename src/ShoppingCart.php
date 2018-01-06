@@ -60,7 +60,7 @@ class ShoppingCart
      *
      * @return empty the session cart array 
      */
-    public function forget()
+    public function destroy()
     {
         // remove the Cart from the Session
         Session::forget('cart');
@@ -79,7 +79,7 @@ class ShoppingCart
         $id = $item->id;
 
         // add the item properties
-        $storedItem = ['qty' => 0, 'price' => $item->price, 'item' => $item];
+        $storedItem = ['qty' => 0, 'price' => $item->price, 'item' => $item->toArray()];
 
         // check if the item exists in the cart before
         // and if it exists then get it from the cart
@@ -150,5 +150,16 @@ class ShoppingCart
         // update the Cart in the Session
         $this->update();
     }
-}
 
+    /**
+     * get the cart items count
+     *
+     * @return the cart total quantity 
+     */
+    public function count()
+    {
+        // we need id for the array index
+        return $this->totalQty ? $this->totalQty : null;
+    }
+
+}

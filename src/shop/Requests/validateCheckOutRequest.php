@@ -28,9 +28,9 @@ class validateCheckOutRequest extends FormRequest
             'address' => 'required|string',
             'card-name' => 'required|string',
             'card-number' => 'required|numeric',
-            'card-expiry-month' => 'required|numeric|max:2',
-            'card-expiry-year' => 'required|numeric|min:4|max:4',
-            'card-cvc' => 'required|numeric|min:3|max:3'
+            'card-expiry-month' => 'required|numeric',
+            'card-expiry-year' => 'required|numeric',
+            'card-cvc' => 'required|numeric'
         ];
     }
 }
