@@ -73,28 +73,28 @@ class ShoppingCart
      *
      * @return update the session cart array and the cart object 
      */
-    public function add($item)
+    public function add($item, array $options = null)
     {
-        // we need id for the array index
-        $id = $item->id;
+        // we need unique index for the item
+        $uniqueIndex = $options ? $this->createUniqueIndex($item->id, $options) : $item->id;
 
         // add the item properties
-        $storedItem = ['qty' => 0, 'price' => $item->price, 'item' => $item->toArray()];
+        $storedItem = ['qty' => 0, 'price' => $item->price, 'options' => $options, 'item' => $item->toArray()];
 
         // check if the item exists in the cart before
         // and if it exists then get it from the cart
         if($this->items)
         {
-            if(array_key_exists($id, $this->items))
+            if(array_key_exists($uniqueIndex, $this->items))
             {
-                $storedItem = $this->items[$id];
+                $storedItem = $this->items[$uniqueIndex];
             }
         }
 
         // update the cart increase qty and price
         $storedItem['qty']++;
         $storedItem['price'] = $item->price * $storedItem['qty'];
-        $this->items[$id] = $storedItem;
+        $this->items[$uniqueIndex] = $storedItem;
         $this->totalQty++;
         $this->totalPrice += $item->price;
 
@@ -109,21 +109,18 @@ class ShoppingCart
      *
      * @return update the session cart array and the cart object 
      */
-    public function reduceOneItem($item)
+    public function reduceOneItem($uniqueIndex)
     {
-        // we need id for the array index
-        $id = $item->id;
-
         // decrease the qty and the price in the cart
-        $this->items[$id]['qty']--;
-        $this->items[$id]['price'] -= $this->items[$id]['item']['price'];
+        $this->items[$uniqueIndex]['qty']--;
+        $this->items[$uniqueIndex]['price'] -= $this->items[$uniqueIndex]['item']['price'];
         $this->totalQty--;
-        $this->totalPrice -= $this->items[$id]['item']['price'];
+        $this->totalPrice -= $this->items[$uniqueIndex]['item']['price'];
 
         // if the qty is 0 or less remove the item from Cart
-        if($this->items[$id]['qty'] <= 0)
+        if($this->items[$uniqueIndex]['qty'] <= 0)
         {
-            unset($this->items[$id]);
+            unset($this->items[$uniqueIndex]);
         }
 
         // update the Cart in the Session
@@ -137,15 +134,12 @@ class ShoppingCart
      *
      * @return update the session cart array and the cart object 
      */
-    public function remove($item)
+    public function remove($uniqueIndex)
     {
-        // we need id for the array index
-        $id = $item->id;
-
         // remove item qty and price from cart
-        $this->totalQty -= $this->items[$id]['qty'];
-        $this->totalPrice -= $this->items[$id]['price'];
-        unset($this->items[$id]);
+        $this->totalQty -= $this->items[$uniqueIndex]['qty'];
+        $this->totalPrice -= $this->items[$uniqueIndex]['price'];
+        unset($this->items[$uniqueIndex]);
 
         // update the Cart in the Session
         $this->update();
@@ -160,6 +154,29 @@ class ShoppingCart
     {
         // we need id for the array index
         return $this->totalQty ? $this->totalQty : null;
+    }
+
+    /**
+     * create unique index
+     *
+     * @param item
+     *
+     * @param options array
+     *
+     * @return uniqueIndex for the shopping cart 
+     */
+    public function createUniqueIndex($id, $options)
+    {
+        $uniqueIndex = $id;
+
+        if($options){
+            foreach($options as $key => $value){
+                $uniqueIndex .= '_' .$key. '_' .$value;
+            }
+        }
+
+        $uniqueIndex = base64_encode($uniqueIndex);
+        return $uniqueIndex;
     }
 
 }
