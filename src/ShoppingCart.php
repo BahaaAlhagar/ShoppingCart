@@ -3,6 +3,9 @@
 namespace BahaaAlhagar\ShoppingCart;
 
 use Illuminate\Support\Facades\Session;
+use BahaaAlhagar\ShoppingCart\Exceptions\CartIsEmptyException;
+use BahaaAlhagar\ShoppingCart\Exceptions\NegativeQuantityException;
+use BahaaAlhagar\ShoppingCart\Exceptions\UnknownUniqueIndexException;
 
 class ShoppingCart
 {
@@ -179,4 +182,79 @@ class ShoppingCart
         return $uniqueIndex;
     }
 
+    /**
+     * update item in the Cart
+     *
+     * @param object $item item to add
+     *
+     * @return update the session cart array and the cart object 
+     */
+    public function modify($uniqueIndex, $qty)
+    {
+        // check quantity
+        if($qty < 0)
+        {
+            throw new NegativeQuantityException('Negative Quantity!');
+        }
+
+        // check if the item exists in the cart before
+        if(!$this->items){
+            throw new CartIsEmptyException('Cart is empty');
+        } 
+
+        if(!array_key_exists($uniqueIndex, $this->items))
+        {
+            throw new UnknownUniqueIndexException("The cart does not contain this index {$uniqueIndex}.");
+        }
+
+        // get the current item from the cart
+        $currentItem = $this->items[$uniqueIndex];
+
+        // if its the same qty do nothing
+        if($currentItem['qty'] == $qty)
+        {
+            return false;
+        }
+
+        $currentItemPrice = $this->getItemPrice($uniqueIndex);
+        
+
+        $this->totalPrice -= $currentItem['price'];
+        $this->totalPrice += ($qty * $currentItemPrice);
+
+        $this->totalQty -= $currentItem['qty'];
+        $this->totalQty += $qty;
+
+        $this->items[$uniqueIndex]['qty'] = $qty;
+
+        $this->items[$uniqueIndex]['price'] = $qty * $currentItemPrice;
+
+        // if the qty is 0 or less remove the item from Cart
+        if($this->items[$uniqueIndex]['qty'] <= 0)
+        {
+            unset($this->items[$uniqueIndex]);
+        }
+
+        // add the cart to the Session
+        $this->update();
+    }
+
+    /**
+     * get item price
+     *
+     * @param unique index
+     *
+     * @return the item price
+     */
+    public function getItemPrice($uniqueIndex)
+    {
+        if(!$this->items)
+        {
+            throw new CartIsEmptyException('cart is empty!');
+        }
+
+        $item = $this->items[$uniqueIndex];
+
+        return $itemPrice = $item['price']/$item['qty'];
+    }
 }
