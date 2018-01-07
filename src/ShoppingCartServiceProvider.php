@@ -28,9 +28,10 @@ class ShoppingCartServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('ShoppingCart', function ()
+        $this->app->bind('ShoppingCart', function ($app)
         {
-            return new ShoppingCart();
+            $events = $app['events'];
+            return new ShoppingCart($events);
         });
     }
 }

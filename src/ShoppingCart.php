@@ -3,6 +3,7 @@
 namespace BahaaAlhagar\ShoppingCart;
 
 use Illuminate\Support\Facades\Session;
+use Illuminate\Contracts\Events\Dispatcher;
 use BahaaAlhagar\ShoppingCart\Exceptions\CartIsEmptyException;
 use BahaaAlhagar\ShoppingCart\Exceptions\InvalidQuantityException;
 use BahaaAlhagar\ShoppingCart\Exceptions\UnknownUniqueIndexException;
@@ -14,10 +15,12 @@ class ShoppingCart
     public $totalQty;
     public $totalPrice;
 
+    protected $events;
+
     /**
      * Create a new Skeleton Instance
      */
-    function __construct()
+    function __construct(Dispatcher $events)
     {
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
 
@@ -28,6 +31,7 @@ class ShoppingCart
             $this->totalPrice = $oldCart->totalPrice;
         }
         
+        $this->events = $events;
     }
 
     /**
@@ -35,7 +39,7 @@ class ShoppingCart
      *
      * @return get the session cart array and the cart object or null
      */
-    public function get()
+    public function getContent()
     {
         // Get the Cart from the Session if there is one
         $cart = Session::has('cart') ? Session::get('cart') : null;
@@ -51,7 +55,8 @@ class ShoppingCart
      */
     public function update()
     {
-        // add the Cart to the Session
+        // unset the events add the Cart to the Session
+        $this->events = null;
         Session::put('cart', $this);
 
         // return the Cart if needed
@@ -101,6 +106,9 @@ class ShoppingCart
         $this->totalQty++;
         $this->totalPrice += $item->price;
 
+        // cartItem added event
+        $this->events->fire('cartItem.added', $this->items[$uniqueIndex]);
+
         // add the cart to the Session
         $this->update();
         
@@ -129,6 +137,9 @@ class ShoppingCart
             unset($this->items[$uniqueIndex]);
         }
 
+        // cartItem modified event
+        $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
+
         // update the Cart in the Session
         $this->update();
     }
@@ -145,6 +156,11 @@ class ShoppingCart
         // remove item qty and price from cart
         $this->totalQty -= $this->items[$uniqueIndex]['qty'];
         $this->totalPrice -= $this->items[$uniqueIndex]['price'];
+
+        // cartItem removed event
+        $this->events->fire('cartItem.removed', $this->items[$uniqueIndex]);
+
+        // remove the cart item
         unset($this->items[$uniqueIndex]);
 
         // update the Cart in the Session
@@ -204,27 +220,11 @@ class ShoppingCart
             throw new UnknownUniqueIndexException("The cart does not contain this index {$uniqueIndex}.");
         }
 
-        // get the current item from the cart
-        $currentItem = $this->items[$uniqueIndex];
+        // update the cart item
+        $this->updateItem($uniqueIndex, $qty);
 
-        // if its the same qty do nothing
-        if($currentItem['qty'] == $qty)
-        {
-            return false;
-        }
-
-        $currentItemPrice = $this->getItemPrice($uniqueIndex);
-        
-
-        $this->totalPrice -= $currentItem['price'];
-        $this->totalPrice += ($qty * $currentItemPrice);
-
-        $this->totalQty -= $currentItem['qty'];
-        $this->totalQty += $qty;
-
-        $this->items[$uniqueIndex]['qty'] = $qty;
-
-        $this->items[$uniqueIndex]['price'] = $qty * $currentItemPrice;
+        // cartItem modified event
+        $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
 
         // if the qty is 0 or less remove the item from Cart
         if($this->items[$uniqueIndex]['qty'] <= 0)
@@ -253,6 +253,39 @@ class ShoppingCart
         $item = $this->items[$uniqueIndex];
 
         return $itemPrice = $item['price']/$item['qty'];
+    }
+
+    /**
+     * update the item depends on the qty
+     *
+     * @param unique index
+     *
+     * @param integer $qty
+     *
+     * @return void
+     */
+    public function updateItem($uniqueIndex, $qty)
+    {
+        // get the current item from the cart
+        $currentItem = $this->items[$uniqueIndex];
+
+        // if its the same qty do nothing
+        if($currentItem['qty'] == $qty)
+        {
+            return false;
+        }
+
+        $currentItemPrice = $this->getItemPrice($uniqueIndex);
+        
+        $this->totalPrice -= $currentItem['price'];
+        $this->totalPrice += ($qty * $currentItemPrice);
+
+        $this->totalQty -= $currentItem['qty'];
+        $this->totalQty += $qty;
+
+        $this->items[$uniqueIndex]['qty'] = $qty;
+
+        $this->items[$uniqueIndex]['price'] = $qty * $currentItemPrice;
     }
 
 }
