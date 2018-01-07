@@ -4,7 +4,7 @@ namespace BahaaAlhagar\ShoppingCart;
 
 use Illuminate\Support\Facades\Session;
 use BahaaAlhagar\ShoppingCart\Exceptions\CartIsEmptyException;
-use BahaaAlhagar\ShoppingCart\Exceptions\NegativeQuantityException;
+use BahaaAlhagar\ShoppingCart\Exceptions\InvalidQuantityException;
 use BahaaAlhagar\ShoppingCart\Exceptions\UnknownUniqueIndexException;
 
 class ShoppingCart
@@ -103,6 +103,9 @@ class ShoppingCart
 
         // add the cart to the Session
         $this->update();
+        
+        // return the cart index for additional work
+        return $uniqueIndex;
     }
 
     /**
@@ -170,31 +173,25 @@ class ShoppingCart
      */
     public function createUniqueIndex($id, $options)
     {
-        $uniqueIndex = $id;
-
-        if($options){
-            foreach($options as $key => $value){
-                $uniqueIndex .= '_' .$key. '_' .$value;
-            }
-        }
-
-        $uniqueIndex = base64_encode($uniqueIndex);
+        $uniqueIndex = md5($id.serialize($options));
         return $uniqueIndex;
     }
 
     /**
      * update item in the Cart
      *
-     * @param object $item item to add
+     * @param unique item index to modify
+     *
+     * @param amount to edit
      *
      * @return update the session cart array and the cart object 
      */
     public function modify($uniqueIndex, $qty)
     {
         // check quantity
-        if($qty < 0)
+        if(is_float($qty + 0) || $qty < 0)
         {
-            throw new NegativeQuantityException('Negative Quantity!');
+            throw new InvalidQuantityException('Not supported Quantity!');
         }
 
         // check if the item exists in the cart before
@@ -257,4 +254,5 @@ class ShoppingCart
 
         return $itemPrice = $item['price']/$item['qty'];
     }
+
 }

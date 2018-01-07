@@ -6,7 +6,7 @@ use RuntimeException;
 /**
 *  run time exception
 */
-class NegativeQuantityException extends RuntimeException
+class InvalidQuantityException extends RuntimeException
 {
 
 }
