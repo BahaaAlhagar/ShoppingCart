@@ -84,13 +84,20 @@ class ShoppingCart
      *
      * @return update the session cart array and the cart object 
      */
-    public function add($item, array $options = null)
+    public function add($item, $qty = null, array $options = null)
     {
-        // we need unique index for the item
+        // if it is a mutated item by using options then give it another offset
+        // else use the item model id
         $uniqueIndex = $options ? $this->createUniqueIndex($item->id, $options) : $item->id;
 
-        // add the item properties
+        $this->validateQty($qty);
+
+        // if there is no certain qty provided by the method then set it to 1
+        $Qty = $qty ? $qty : 1;
+
+        // Cart item structure
         $storedItem = ['qty' => 0, 'price' => $item->price, 'options' => $options, 'item' => $item->toArray()];
+
 
         // check if the item exists in the cart before
         // and if it exists then get it from the cart
@@ -103,11 +110,11 @@ class ShoppingCart
         }
 
         // update the cart increase qty and price
-        $storedItem['qty']++;
+        $storedItem['qty'] += $Qty;
         $storedItem['price'] = $item->price * $storedItem['qty'];
         $this->items[$uniqueIndex] = $storedItem;
-        $this->totalQty++;
-        $this->totalPrice += $item->price;
+        $this->totalQty += $Qty;
+        $this->totalPrice += ($Qty * $item->price);
 
         // cartItem added event
         $this->events->fire('cartItem.added', $this->items[$uniqueIndex]);
@@ -140,7 +147,7 @@ class ShoppingCart
         $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
 
         // if the item qty is 0 or less remove the item from Cart
-        $this->qtyStatusCheck($uniqueIndex);
+        $this->itemQtyStatusCheck($uniqueIndex);
 
         // update the Cart in the Session
         $this->update();
@@ -217,7 +224,7 @@ class ShoppingCart
         $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
 
         // if the item qty is 0 or less remove the item from Cart
-        $this->qtyStatusCheck($uniqueIndex);
+        $this->itemQtyStatusCheck($uniqueIndex);
 
         // add the cart to the Session
         $this->update();
@@ -317,7 +324,7 @@ class ShoppingCart
      *
      * @return void
      */
-    public function qtyStatusCheck($uniqueIndex)
+    public function itemQtyStatusCheck($uniqueIndex)
     {
         // if the qty is 0 or less remove the item from Cart
         if($this->items[$uniqueIndex]['qty'] <= 0)
