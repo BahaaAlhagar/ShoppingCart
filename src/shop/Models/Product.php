@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ShoppingCart;
+namespace App\Shop;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class Product extends Model
 
     public function orders()
     {
-    	return $this->belongsToMany(Product::class)->withPivot('qty', 'price');
+    	return $this->belongsToMany(Product::class)->withPivot('qty', 'price', 'options');
     }
 }

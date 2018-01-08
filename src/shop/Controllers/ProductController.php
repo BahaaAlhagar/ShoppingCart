@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\ShoppingCart;
+namespace App\Http\Controllers\Shop;
 
 use Cart;
 use Session;
+use App\Shop\Product;
 use Illuminate\Http\Request;
-use App\ShoppingCart\Product;
 use App\Http\Controllers\Controller;
 
 class ProductController extends Controller
@@ -19,36 +19,45 @@ class ProductController extends Controller
     {
         $products = Product::latest()->paginate(12);
 
-        return view('ShoppingCart/shop', compact('products'));
+        return view('Shop/shop', compact('products'));
     }
 
-
-    public function addToCart(Request $request, Product $product)
+    public function addToCart(Request $request, Product $product, $qty = null)
     {
-        Cart::add($product);
+        $qty ? Cart::add($product, $qty) : Cart::add($product);
 
-        return back();
+        return redirect()->route('product.shop');
     }
 
-    public function reduceOneItem(Product $product, Request $request)
+    public function reduceOneItem($id, Request $request)
     {
-        Cart::reduceOneItem($product);
-        return back();
+        Cart::reduceOneItem($id);
+
+        return redirect()->route('product.shoppingCart');
     }
 
-    public function RemovefromCart(Product $product, Request $request)
+    public function RemovefromCart($id, Request $request)
     {
-        Cart::remove($product);
+        Cart::remove($id);
 
-        return back();
+        return redirect()->route('product.shoppingCart');
+    }
+
+    public function modify(Request $request, $id)
+    {
+        $this->validate($request, [
+            'qty' => 'required|integer'
+            ]);
+
+        Cart::modify($id, $request->qty);
+
+        return redirect()->route('product.shoppingCart');
     }
 
     public function shoppingCart()
     {
-        $cart = Cart::get();
+        $cart = Cart::getContent();
 
-        return view('ShoppingCart/shoppingCart', compact('cart'));
+        return view('Shop/shoppingCart', compact('cart'));
     }
-
-
 }

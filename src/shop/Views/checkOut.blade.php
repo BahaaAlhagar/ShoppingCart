@@ -1,4 +1,4 @@
-@extends('ShoppingCart/layouts/master')
+@extends('Shop/layouts/master')
 
 @section('title')
     - Check out
@@ -15,43 +15,43 @@
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label for="name">Name:</label>
-							<input class="form-control" type="text" name="name" id="name" required>
+							<input class="form-control" type="text" name="name" id="name" value="{{ old('name') ? old('name') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label for="address">Address:</label>
-							<input class="form-control" type="text" name="address" id="address" required>
+							<input class="form-control" type="text" name="address" id="address" value="{{ old('address') ? old('address') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label for="card-name">Card holder name:</label>
-							<input class="form-control" type="text" name="card-name" id="card-name" required>
+							<input class="form-control" type="text" name="card-name" id="card-name" value="{{ old('card-name') ? old('card-name') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label for="card-number">Credit Card number:</label>
-							<input class="form-control" type="text" name="card-number" id="card-number" required>
+							<input class="form-control" type="text" name="card-number" id="card-number" value="{{ old('card-number') ? old('card-number') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label for="card-expiry-month">Expiration Month:</label>
-							<input class="form-control" type="text" name="card-expiry-month" id="card-expiry-month" required>
+							<input class="form-control" type="text" name="card-expiry-month" id="card-expiry-month" value="{{ old('card-expiry-month') ? old('card-expiry-month') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-6">
 						<div class="form-group">
 							<label for="card-expiry-year">Expiration Year:</label>
-							<input class="form-control" type="text" name="card-expiry-year" id="card-expiry-year" required>
+							<input class="form-control" type="text" name="card-expiry-year" id="card-expiry-year" value="{{ old('card-expiry-year') ? old('card-expiry-year') : '' }}" required>
 						</div>
 					</div>
 					<div class="col-xs-12">
 						<div class="form-group">
 							<label for="card-cvc">CVC:</label>
-							<input class="form-control" type="text" name="card-cvc" id="card-cvc" required>
+							<input class="form-control" type="text" name="card-cvc" id="card-cvc" value="{{ old('card-cvc') ? old('card-cvc') : '' }}" required>
 						</div>
 					</div>
 				</div>

@@ -1,4 +1,4 @@
-@extends('ShoppingCart/layouts/master')
+@extends('Shop/layouts/master')
 
 @section('title')
     - Shop Page
@@ -6,6 +6,12 @@
 
 @section('content')
 
+    @if(Session::has('success'))
+        <div class="alert alert-success col-xs-12">
+            {{ session::get('success') }}
+        </div>
+    @endif
+    
     @foreach($products as $product)
         <div class="col-xs-6 col-md-3 text-center">
             <div class="thumbnail clearfix">
