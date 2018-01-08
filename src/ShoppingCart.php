@@ -70,6 +70,9 @@ class ShoppingCart
      */
     public function destroy()
     {
+        // Cart destroyed event
+        $this->events->fire('cart.destroyed', $this);
+
         // remove the Cart from the Session
         Session::forget('cart');
     }
@@ -125,20 +128,19 @@ class ShoppingCart
      */
     public function reduceOneItem($uniqueIndex)
     {
+        $this->validateIndex($uniqueIndex);
+
         // decrease the qty and the price in the cart
         $this->items[$uniqueIndex]['qty']--;
         $this->items[$uniqueIndex]['price'] -= $this->items[$uniqueIndex]['item']['price'];
         $this->totalQty--;
         $this->totalPrice -= $this->items[$uniqueIndex]['item']['price'];
 
-        // if the qty is 0 or less remove the item from Cart
-        if($this->items[$uniqueIndex]['qty'] <= 0)
-        {
-            unset($this->items[$uniqueIndex]);
-        }
-
         // cartItem modified event
         $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
+
+        // if the item qty is 0 or less remove the item from Cart
+        $this->qtyStatusCheck($uniqueIndex);
 
         // update the Cart in the Session
         $this->update();
@@ -204,21 +206,9 @@ class ShoppingCart
      */
     public function modify($uniqueIndex, $qty)
     {
-        // check quantity
-        if(is_float($qty + 0) || $qty < 0)
-        {
-            throw new InvalidQuantityException('Not supported Quantity!');
-        }
+        $this->validateQty($qty);
 
-        // check if the item exists in the cart before
-        if(!$this->items){
-            throw new CartIsEmptyException('Cart is empty');
-        } 
-
-        if(!array_key_exists($uniqueIndex, $this->items))
-        {
-            throw new UnknownUniqueIndexException("The cart does not contain this index {$uniqueIndex}.");
-        }
+        $this->validateIndex($uniqueIndex);
 
         // update the cart item
         $this->updateItem($uniqueIndex, $qty);
@@ -226,11 +216,8 @@ class ShoppingCart
         // cartItem modified event
         $this->events->fire('cartItem.modified', $this->items[$uniqueIndex]);
 
-        // if the qty is 0 or less remove the item from Cart
-        if($this->items[$uniqueIndex]['qty'] <= 0)
-        {
-            unset($this->items[$uniqueIndex]);
-        }
+        // if the item qty is 0 or less remove the item from Cart
+        $this->qtyStatusCheck($uniqueIndex);
 
         // add the cart to the Session
         $this->update();
@@ -288,4 +275,54 @@ class ShoppingCart
         $this->items[$uniqueIndex]['price'] = $qty * $currentItemPrice;
     }
 
+    /**
+     * validate quantity integer and not negative
+     *
+     * @param  $qty
+     *
+     * @return void
+     */
+    public function validateQty($qty)
+    {
+        if(is_float($qty + 0) || $qty < 0)
+        {
+            throw new InvalidQuantityException('Invalid quantity!');
+        }
+    }
+
+    /**
+     * check if the cart contain certain offset or not
+     *
+     * @param  $uniqueIndex
+     *
+     * @return void
+     */
+    public function validateIndex($uniqueIndex)
+    {
+        // check if the item exists in the cart before
+        if(!$this->items){
+            throw new CartIsEmptyException('Cart is empty!');
+        } 
+
+        if(!array_key_exists($uniqueIndex, $this->items))
+        {
+            throw new UnknownUniqueIndexException("The cart does not contain this index {$uniqueIndex}.");
+        }
+    }
+
+    /**
+     * check if item qty is <= 0 and remove item if true
+     *
+     * @param  $uniqueIndex
+     *
+     * @return void
+     */
+    public function qtyStatusCheck($uniqueIndex)
+    {
+        // if the qty is 0 or less remove the item from Cart
+        if($this->items[$uniqueIndex]['qty'] <= 0)
+        {
+            unset($this->items[$uniqueIndex]);
+        }
+    }
 }
