@@ -15,7 +15,7 @@ class packageHelper
      * The filesystem handler.
      * @var object
      */
-    protected $files;
+    public $files;
 
     /**
      * Create a new instance.

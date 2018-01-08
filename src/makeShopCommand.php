@@ -27,6 +27,13 @@ class makeShopCommand extends Command
     protected $helper;
 
     /**
+     * command folder paths
+     * @var object
+     */
+    protected $paths;
+
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -34,6 +41,14 @@ class makeShopCommand extends Command
     public function __construct(packageHelper $helper)
     {
         parent::__construct();
+
+        $this->paths = [
+        '\\\\Shop\\\\Models'      => app_path('Shop'),
+        '\\\\Shop\\\\Views'       => resource_path('views\Shop'),
+        '\\\\Shop\\\\Migrations'  => database_path('migrations'),
+        '\\\\Shop\\\\Requests'    => app_path('Http\Requests\Shop'),
+        '\\\\Shop\\\\Controllers' => app_path('Http\Controllers\Shop'),
+        ];
 
         $this->helper = $helper;
     }
@@ -45,6 +60,17 @@ class makeShopCommand extends Command
      */
     public function handle()
     {
-        $this->info('making the shop for you!');
+        $this->info('building the shop.');
+
+        $this->info('moving the nessecary files.');
+
+        foreach($this->paths as $from => $to)
+        {
+            $this->helper->files->copyDirectory(__DIR__.$from, $to);
+        }
+
+        $this->helper->dumpAutoloads();
+
+        $this->info("Your quick shop is done! check it ".config('app.url'). "/shop.");
     }
 }
