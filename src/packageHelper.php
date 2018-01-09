@@ -53,5 +53,15 @@ class packageHelper
     {
         shell_exec('composer dump-autoload');
     }
+
+    /**
+     * artisan storage link.
+     * 
+     * @return mixed
+     */
+    public function storageLink()
+    {
+        shell_exec('php artisan storage:link');
+    }
 }
 

@@ -50,6 +50,7 @@ class makeShopCommand extends Command
 
         $this->paths = [
         '\\\\Shop\\\\Models'      => app_path('Shop'),
+        '\\\\Shop\\\\Seeds'       => database_path('seeds'),
         '\\\\Shop\\\\Views'       => resource_path('views\Shop'),
         '\\\\Shop\\\\Migrations'  => database_path('migrations'),
         '\\\\Shop\\\\Requests'    => app_path('Http\Requests\Shop'),
@@ -104,6 +105,8 @@ class makeShopCommand extends Command
             $this->helper->files->copyDirectory(__DIR__.$from, $to);
         }
 
+        $this->helper->files->copy(__DIR__.'\\Shop\\item.png', storage_path('app/public/item.png'));
+
         $this->info('updating User model!');
 
         $replacedUserText = 'use Notifiable;
@@ -123,6 +126,7 @@ class makeShopCommand extends Command
 
         $this->helper->files->copy(__DIR__.'\\Shop\\shop_installed.txt', storage_path('shop_installed.txt'));
 
+        $this->helper->storageLink();
         $this->helper->dumpAutoloads();
 
         $this->info("Your quick shop is done! check it ".config('app.url'). "/shop.");
