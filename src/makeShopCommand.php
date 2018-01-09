@@ -32,6 +32,12 @@ class makeShopCommand extends Command
      */
     protected $paths;
 
+    /**
+     * command routes to be add when making the shop
+     * @var object
+     */
+    protected $routes;
+
 
     /**
      * Create a new command instance.
@@ -50,6 +56,25 @@ class makeShopCommand extends Command
         '\\\\Shop\\\\Controllers' => app_path('Http\Controllers\Shop'),
         ];
 
+        $this->routes = "
+        /*shop routes*/
+    route::group(['prefix' => 'shop','namespace' => 'Shop'], function(){
+
+    route::get('/', 'ProductController@index')->name('product.shop');
+
+    route::get('addtocart/{product}/{qty?}', 'ProductController@addToCart')->name('product.addToCart');
+
+    route::get('reduce/{id}', 'ProductController@reduceOneItem')->name('product.reduceOneItem');
+    route::get('remove/{id}', 'ProductController@RemovefromCart')->name('product.RemovefromCart');
+
+    route::patch('modify/{id}', 'ProductController@modify')->name('product.modify');
+
+    route::get('cart', 'ProductController@shoppingCart')->name('product.shoppingCart');
+
+    route::get('checkout', 'OrderController@checkOut')->name('order.checkOut');
+    route::post('checkout', 'OrderController@payment')->name('order.payment');
+});";
+
         $this->helper = $helper;
     }
 
@@ -62,12 +87,27 @@ class makeShopCommand extends Command
     {
         $this->info('building the shop.');
 
-        $this->info('moving the nessecary files.');
+        $this->info('moving the necessary files.');
 
         foreach($this->paths as $from => $to)
         {
             $this->helper->files->copyDirectory(__DIR__.$from, $to);
         }
+
+        $this->info('updating User model!');
+
+        $replacedUserText = 'use Notifiable;
+        public function orders() {return $this->hasMany(\App\Shop\Order::class);}';
+
+        $this->helper->replaceAndSave(app_path('User.php'), 'use Notifiable;', $replacedUserText);
+
+        $this->info('added User class relations.');
+
+        $this->info('updating routes/web.php!');
+
+        $this->helper->files->append(base_path('routes/web.php'), $this->routes);
+
+        $this->info('added the shop routes successfully.');
 
         $this->helper->dumpAutoloads();
 
