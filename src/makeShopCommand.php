@@ -87,6 +87,16 @@ class makeShopCommand extends Command
     {
         $this->info('building the shop.');
 
+        // check if shop already configured before
+        if(file_exists(storage_path('shop_installed.txt')))
+        {
+            $this->error('the shop already installed!');
+
+            $this->error("to configure it please remove or rename this file in your storage ".storage_path('shop_installed.txt'));
+
+            return false;
+        }
+
         $this->info('moving the necessary files.');
 
         foreach($this->paths as $from => $to)
@@ -108,6 +118,10 @@ class makeShopCommand extends Command
         $this->helper->files->append(base_path('routes/web.php'), $this->routes);
 
         $this->info('added the shop routes successfully.');
+
+        $this->info('moving shop_installed.txt file to the storage folder.');
+
+        $this->helper->files->copy(__DIR__.'\\Shop\\shop_installed.txt', storage_path('shop_installed.txt'));
 
         $this->helper->dumpAutoloads();
 
