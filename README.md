@@ -39,6 +39,19 @@ in your terminal
 ``` bash
 	php artisan make:shop
 ```
+
+that will move the required files and migration files to your application, then we will have to migrate the required tables and seed some dummy data.
+first migrate the tables.
+
+``` bash
+	php artisan migrate
+```
+then add the test products.
+
+``` bash
+	php artisan db:seed --class=ShopSeeder
+```
+
 you may now visite the basic shop at
 ``` bash
 	http://yourAppUrl/shop
