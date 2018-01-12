@@ -122,8 +122,8 @@ class ShoppingCart
         // add the cart to the Session
         $this->update();
         
-        // return the cart index for additional work
-        return $uniqueIndex;
+        // return the cart item that has been added
+        return $this->items[$uniqueIndex];
     }
 
     /**
@@ -185,6 +185,17 @@ class ShoppingCart
     {
         // we need id for the array index
         return $this->totalQty ? $this->totalQty : null;
+    }
+
+    /**
+     * get the cart items total price
+     *
+     * @return the cart total price 
+     */
+    public function total()
+    {
+        // we need id for the array index
+        return $this->totalPrice ? $this->totalPrice : null;
     }
 
     /**
