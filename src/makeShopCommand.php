@@ -93,7 +93,7 @@ class makeShopCommand extends Command
         {
             $this->error('the shop already installed!');
 
-            $this->error("to configure it please remove or rename this file in your storage ".storage_path('shop_installed.txt'));
+            $this->error("to reinstall it please remove or rename this file in your storage ".storage_path('shop_installed.txt'));
 
             return false;
         }

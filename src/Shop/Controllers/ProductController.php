@@ -26,7 +26,7 @@ class ProductController extends Controller
     {
         $qty ? Cart::add($product, $qty) : Cart::add($product);
 
-        return redirect()->route('product.shop');
+        return back();
     }
 
     public function reduceOneItem($id, Request $request)
