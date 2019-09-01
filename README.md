@@ -152,11 +152,6 @@ The cart also has events build in. There are five events available for you to li
 | cartItem.removed  | When an item is removed from the cart.   | The `CartItem` that was removed. |
 | cart.destroyed   | When the content of a cart was destroyed.   | return the removed Cart Model. |
 
-## Example
-
-you may use the `php artisan make:shop` command for a quick code setup, and test the Cart.
-
-
 
 ## Change log
 
