@@ -30,33 +30,6 @@ And add a new line to the `aliases` array:
 	'Cart' => BahaaAlhagar\ShoppingCart\Facades\Cart::class,
 ```
 
-
-Now you're ready to start using the shoppingcart in your application.
-
-If you want a quick real test or a first step for your app you may install the basic shop that comes with the ShoppingCart.
-
-in your terminal
-``` bash
-	php artisan make:shop
-```
-
-that will move the required files and migration files to your application, then we will have to migrate the required tables and seed some dummy data.
-first migrate the tables.
-
-``` bash
-	php artisan migrate
-```
-then add the test products.
-
-``` bash
-	php artisan db:seed --class=ShopSeeder
-```
-
-you may now visite the basic shop at
-``` bash
-	http://yourAppUrl/shop
-```
-
 ## Usage
 
 The ShoppingCart gives you the following methods to use:

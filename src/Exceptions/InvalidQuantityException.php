@@ -1,6 +1,7 @@
 <?php
 
 namespace BahaaAlhagar\ShoppingCart\Exceptions;
+
 use RuntimeException;
 
 /**
@@ -8,5 +9,4 @@ use RuntimeException;
 */
 class InvalidQuantityException extends RuntimeException
 {
-
 }

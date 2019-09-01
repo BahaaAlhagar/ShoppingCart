@@ -10,7 +10,6 @@ use BahaaAlhagar\ShoppingCart\Exceptions\UnknownUniqueIndexException;
 
 class ShoppingCart
 {
-
     public $items = null;
     public $totalQty;
     public $totalPrice;
@@ -20,12 +19,11 @@ class ShoppingCart
     /**
      * Create a new Skeleton Instance
      */
-    function __construct(Dispatcher $events)
+    public function __construct(Dispatcher $events)
     {
         $oldCart = Session::has('cart') ? Session::get('cart') : null;
 
-        if($oldCart)
-        {
+        if ($oldCart) {
             $this->items = $oldCart->items;
             $this->totalQty = $oldCart->totalQty;
             $this->totalPrice = $oldCart->totalPrice;
@@ -51,7 +49,7 @@ class ShoppingCart
     /**
      * update the cart in the Session
      *
-     * @return update the session cart array and the cart object 
+     * @return update the session cart array and the cart object
      */
     public function update()
     {
@@ -66,7 +64,7 @@ class ShoppingCart
     /**
      * empty the cart in the Session
      *
-     * @return empty the session cart array 
+     * @return empty the session cart array
      */
     public function destroy()
     {
@@ -82,7 +80,7 @@ class ShoppingCart
      *
      * @param object $item item to add
      *
-     * @return update the session cart array and the cart object 
+     * @return update the session cart array and the cart object
      */
     public function add($item, $qty = null, array $options = null)
     {
@@ -101,10 +99,8 @@ class ShoppingCart
 
         // check if the item exists in the cart before
         // and if it exists then get it from the cart
-        if($this->items)
-        {
-            if(array_key_exists($uniqueIndex, $this->items))
-            {
+        if ($this->items) {
+            if (array_key_exists($uniqueIndex, $this->items)) {
                 $storedItem = $this->items[$uniqueIndex];
             }
         }
@@ -131,7 +127,7 @@ class ShoppingCart
      *
      * @param object $item item to reduce by 1
      *
-     * @return update the session cart array and the cart object 
+     * @return update the session cart array and the cart object
      */
     public function reduceOneItem($uniqueIndex)
     {
@@ -158,7 +154,7 @@ class ShoppingCart
      *
      * @param object $item item to remove
      *
-     * @return update the session cart array and the cart object 
+     * @return update the session cart array and the cart object
      */
     public function remove($uniqueIndex)
     {
@@ -179,7 +175,7 @@ class ShoppingCart
     /**
      * get the cart items count
      *
-     * @return the cart total quantity 
+     * @return the cart total quantity
      */
     public function count()
     {
@@ -190,7 +186,7 @@ class ShoppingCart
     /**
      * get the cart items total price
      *
-     * @return the cart total price 
+     * @return the cart total price
      */
     public function total()
     {
@@ -205,7 +201,7 @@ class ShoppingCart
      *
      * @param options array
      *
-     * @return uniqueIndex for the shopping cart 
+     * @return uniqueIndex for the shopping cart
      */
     public function createUniqueIndex($id, $options)
     {
@@ -220,7 +216,7 @@ class ShoppingCart
      *
      * @param amount to edit
      *
-     * @return update the session cart array and the cart object 
+     * @return update the session cart array and the cart object
      */
     public function modify($uniqueIndex, $qty)
     {
@@ -250,8 +246,7 @@ class ShoppingCart
      */
     public function getItemPrice($uniqueIndex)
     {
-        if(!$this->items)
-        {
+        if (!$this->items) {
             throw new CartIsEmptyException('cart is empty!');
         }
 
@@ -275,8 +270,7 @@ class ShoppingCart
         $currentItem = $this->items[$uniqueIndex];
 
         // if its the same qty do nothing
-        if($currentItem['qty'] == $qty)
-        {
+        if ($currentItem['qty'] == $qty) {
             return false;
         }
 
@@ -302,8 +296,7 @@ class ShoppingCart
      */
     public function validateQty($qty)
     {
-        if(is_float($qty + 0) || $qty < 0)
-        {
+        if (is_float($qty + 0) || $qty < 0) {
             throw new InvalidQuantityException('Invalid quantity!');
         }
     }
@@ -318,12 +311,11 @@ class ShoppingCart
     public function validateIndex($uniqueIndex)
     {
         // check if the item exists in the cart before
-        if(!$this->items){
+        if (!$this->items) {
             throw new CartIsEmptyException('Cart is empty!');
-        } 
+        }
 
-        if(!array_key_exists($uniqueIndex, $this->items))
-        {
+        if (!array_key_exists($uniqueIndex, $this->items)) {
             throw new UnknownUniqueIndexException("The cart does not contain this index {$uniqueIndex}.");
         }
     }
@@ -338,8 +330,7 @@ class ShoppingCart
     public function itemQtyStatusCheck($uniqueIndex)
     {
         // if the qty is 0 or less remove the item from Cart
-        if($this->items[$uniqueIndex]['qty'] <= 0)
-        {
+        if ($this->items[$uniqueIndex]['qty'] <= 0) {
             unset($this->items[$uniqueIndex]);
         }
     }

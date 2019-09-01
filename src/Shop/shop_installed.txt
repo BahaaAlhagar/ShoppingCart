@@ -1,2 +1,0 @@
-if this file in your storage then you installed the shop before.
-you may re install it again by removing this file.
